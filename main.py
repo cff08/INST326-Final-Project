@@ -24,7 +24,7 @@ def main():
     storage = StorageSystem()
     db = Database()
     scraper = EventScraper()
-    notication = NotificationSystem()
+    notification = NotificationSystem()
 
    
 if __name__ == "__main__":
