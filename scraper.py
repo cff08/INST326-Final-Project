@@ -40,14 +40,10 @@ class EventScraper:
                 if date_tag is not None:
                     date = date_tag.get_text(strip=True)
 
-                parent_link_tag = card.find_parent('a')
-                if parent_link_tag is not None:
-                    link = parent_link_tag.get('href')
 
                 event_info = {
                     "title": title,
                     "date": date,
-                    "link": link
                 }
                 events.append(event_info)
 
@@ -67,5 +63,4 @@ if __name__ == "__main__":
     for event in event_list:
         print(f"Title: {event['title']}")
         print(f"Date: {event['date']}")
-        print(f"Link: {event['link']}")
         print("-" * 50)
