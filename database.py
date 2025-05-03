@@ -1,6 +1,5 @@
-#INST326: Final Project
-#Event Finder App
-
+import sqlite3
+import pandas as pd
 
 DATABASE_NAME = "...."
 
