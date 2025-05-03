@@ -19,6 +19,41 @@ class EventScraper:
             return None
         
     def scrape_events(self):
-    
+
+        soup = self.get_soup()
+        events = []
+
+        if soup is not None:
+            cards = soup.find_all('div', class_= 'card-body')
+            print(f"Found {len(cards)} events on this page.")
+
+            for card in cards:
+                title = "No Title"
+                subtitle = "No Subtitle"
+                link = "No Link"
+
+                title_tag = card.find('h2', class_ = 'card-title')
+                if title_tag is not None:
+                    title = title_tag.get_text(strip=True)
+
+                date_tag = card.find('div', class_='profile-card-title')
+                if date_tag is not None:
+                    date = date_tag.get_text(strip=True)
+
+                parent_link_tag = card.find_parent('a')
+                if parent_link_tag is not None:
+                    link = parent_link_tag.get('href')
+                    
+                event_info = {
+                    "title": title,
+                    "date": date,
+                    "link": link
+                }
+                events.append(event_info)
+
+        else:
+            print("Soup object is None. Cannot scrape events.")
+
+        return events
 if __name__ == "__main__":
     url = "https://stamp.umd.edu/upcoming_events"
