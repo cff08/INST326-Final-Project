@@ -43,7 +43,7 @@ class EventScraper:
                 parent_link_tag = card.find_parent('a')
                 if parent_link_tag is not None:
                     link = parent_link_tag.get('href')
-                    
+
                 event_info = {
                     "title": title,
                     "date": date,
@@ -55,5 +55,17 @@ class EventScraper:
             print("Soup object is None. Cannot scrape events.")
 
         return events
+    
+
 if __name__ == "__main__":
     url = "https://stamp.umd.edu/upcoming_events"
+
+    scraper = EventScraper(url)
+
+    event_list = scraper.scrape_events()
+
+    for event in event_list:
+        print(f"Title: {event['title']}")
+        print(f"Date: {event['date']}")
+        print(f"Link: {event['link']}")
+        print("-" * 50)
