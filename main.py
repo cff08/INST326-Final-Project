@@ -23,7 +23,8 @@ def main():
     
     # Initialize components
     storage = StorageSystem()
-    db = Database()
+    event_db = EventsFinderDB()
+    user_db = UsersFinderDB()
     scraper = EventScraper()
     notification = NotificationSystem()
 
