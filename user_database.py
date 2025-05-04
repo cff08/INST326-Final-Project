@@ -3,7 +3,7 @@ from datetime import datetime
 
 class UsersFinderDB:
     """
-    Manage user information and event creation.
+    Manage user information.
     """
     def __init__(self, database_name="users.db"):
         self.conn = sqlite3.connect(database_name)
