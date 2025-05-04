@@ -1,0 +1,92 @@
+import sqlite3
+from datetime import datetime
+
+class UsersFinderDB:
+    """
+    Manage user information and event creation.
+    """
+    def __init__(self, database_name="users.db"):
+        self.conn = sqlite3.connect(database_name)
+        self.cursor = self.conn.cursor()
+        self.create_table()
+
+    def create_table(self):
+        self.cursor.execute('''
+              CREATE TABLE IF NOT EXISTS users (
+                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                 username TEXT UNIQUE NOT NULL,
+                 email TEXT NOT NULL,
+                 password TEXT NOT NULL,
+                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+             )
+         ''')    
+        self.conn.commit()
+
+    def add_user(self, username, email, password):
+        """Add a new user.
+
+        Args:
+            username (str): Name of the user
+            email (str): Email address of the user
+            password (str): Password of the user
+        """
+       
+        try:
+            self.cursor.execute(
+                '''INSERT INTO users (username, email, password) VALUES (?, ?, ?)''',
+                (username, email, password)
+            )
+            self.conn.commit()
+            print(f"{username} added successfully.")
+            return self.cursor.lastrowid
+        except sqlite3.IntegrityError:
+            print(f"{username} already exists.")  
+
+    def update_user(self, user_id, username, email=None, password=None):
+        """
+        Update user if there are any changes.
+
+        Args:
+            user_id (int): The ID of the user
+            username (str): The name of the user
+            email (str): The email address of the user
+            password (str): The password of the user
+        """
+        update = []
+        value = []
+
+        if username:
+            update.append("username = ?")
+            value.append(username)
+
+        if email:
+            update.append("email = ?")
+            value.append(email)
+
+        if password:
+            update.append("password = ?")
+            value.append(password)
+
+        
+        value.append(user_id)
+        sql = f"UPDATE users SET {', '.join(update)} WHERE id = ?"
+        self.cursor.execute(sql, value)
+        self.conn.commit()
+        print(f"User ID {user_id} update successfully.")  
+
+    def remove_user(self, user_id):
+        self.cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
+        self.conn.commit()   
+        print(f"User ID {user_id} remove successfully.")     
+            
+    def close(self):
+        self.conn.close()        
+
+if __name__ == "__main__":
+    user = UsersFinderDB()
+
+    # Add user
+    #user1 = user.add_user("John", "john@example.com", "123456789")
+    #print(user1)
+    #user.remove_user(user_id=6)
+    user.close()
