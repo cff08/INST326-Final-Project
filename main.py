@@ -10,7 +10,8 @@ Planned Responsibilities:
 """
 
 from system import StorageSystem
-from database import Database
+from event_database import EventsFinderDB
+from user_database import UsersFinderDB
 from scraper import EventScraper  # assuming this is the class name
 
 def main():
