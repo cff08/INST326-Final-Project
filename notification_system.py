@@ -6,6 +6,15 @@ from dateutil import parser as dt_parser
 
 # Email function (Gmail SMTP as an example)
 def send_email(to_email, subject, body):
+    """Sends an email notification using Gmail SMTP.
+
+    Args:
+        to_email (str): The recipient's email address.
+        subject (str): The subject line of the email.
+        body (str): The body content of the email.
+
+    Returns:
+        None """
     msg = MIMEText(body)
     msg['Subject'] = subject
     msg['From'] = 'John@example.com'  # To be Replaced with real email to send notification from
@@ -22,6 +31,14 @@ def send_email(to_email, subject, body):
 
 # Log in-app notifications (this could eventually display in the app)
 def log_in_app(user_id, message):
+     """Logs an in-app notification for a user.
+
+    Args:
+        user_id (int): The user’s ID to whom the notification belongs.
+        message (str): The notification message to be logged.
+
+    Returns:
+        None """
     print(f"[IN-APP] Notification for user {user_id}: {message}")
     # Log to database or file (example using a simple log)
     with open("app_notifications.log", "a") as log_file:
@@ -29,6 +46,17 @@ def log_in_app(user_id, message):
 
 # Main function to send notifications
 def send_event_notifications():
+    """ Sends email and in-app notifications for upcoming events within the next hour.
+
+    This function fetches events happening today and checks if their start time is 
+    within the next hour. If so, it sends email and logs an in-app notification 
+    to the users who favorited the event.
+
+    Args:
+        None
+
+    Returns:
+        None """
     conn = sqlite3.connect("events.db")
     cursor = conn.cursor()
 
