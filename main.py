@@ -20,13 +20,25 @@ def main():
     - Stores them in the database
     - Lets a user bookmark/RSVP to events into lists
     """
-    
     # Initialize components
+    url = "https://stamp.umd.edu/upcoming_events"
+    scraper = EventScraper(url)
+    db = EventsFinderDB()
     storage = StorageSystem()
-    event_db = EventsFinderDB()
     user_db = UsersFinderDB()
-    scraper = EventScraper()
-    notification = NotificationSystem()
+    notifier = NotificationSystem()
+
+    event_list = scraper.scrape_events()
+    
+    for event in event_list:
+        title = event['title']
+        date = event['date']
+        location = "UMD Campus"
+        event_time = "TBD"
+    
+    db.close()
+    
+
 
    
 if __name__ == "__main__":

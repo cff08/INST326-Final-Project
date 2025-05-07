@@ -18,8 +18,8 @@ class StorageSystem:
         Returns:
 
         """
-        self.bookmarks = []
-        self.rsvps = []
+        self.bookmarks = {}
+        self.rsvps = {}
 
     def bookmark_event(self, event_name):
         """
@@ -31,7 +31,11 @@ class StorageSystem:
         Returns:
             True to appending new even_id to the bookmarks list, and false if the event is already bookmarked.
         """
-        pass
+        if event_name in self.bookmarks:
+            return False # Event already bookmarked
+        else:
+            self.bookmarks[event_name] = True
+            return True
 
     def rsvp_event(self, event_name):
         """
@@ -43,7 +47,12 @@ class StorageSystem:
         Returns:
             bool: True if RSVP successful, False if already RSVP’d.
         """
-        pass
+        if event_name in self.rsvps:
+            return False  # Already RSVP'd
+        else:
+            self.rsvps[event_name] = True
+            return True
+        
     def remove_bookmark(self, event_name):
         """
         Removes an event from the user's bookmarked list.
@@ -55,7 +64,12 @@ class StorageSystem:
             bool: True if removal successful, False if event not found in bookmarks.
             Displays all bookmarks after removal
         """
-        pass
+        if event_name in self.bookmarks:
+            del self.bookmarks[event_name]
+            return True
+        else:
+            return False
+        
     def cancel_rsvp(self, event_name):
         """Removes an event from the user's RSVP list.
     
@@ -64,7 +78,11 @@ class StorageSystem:
             Returns: 
             bool: True if removal successful, False if event not found in RSVPs.
             """
-        pass
+        if event_name in self.rsvps:
+            del self.rsvps[event_name]
+            return True
+        else:
+            return False
 
     def display_bookmarks(self):
         """
@@ -73,6 +91,7 @@ class StorageSystem:
         Returns:
             list: A list of all bookmarked event names.
         """
+        
         return self.bookmarks
 
     def display_rsvps(self):
@@ -83,4 +102,5 @@ class StorageSystem:
             list: A list of all RSVPed event names.
         """
         return self.rsvps
+    
     
