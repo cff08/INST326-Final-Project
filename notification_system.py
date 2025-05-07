@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from email.mime.text import MIMEText
 from dateutil import parser as dt_parser
 
-# Email function (Gmail SMTP as an example)
+# Email function 
 def send_email(to_email, subject, body):
     """Sends an email notification using Gmail SMTP.
 
@@ -24,12 +24,12 @@ def send_email(to_email, subject, body):
         with smtplib.SMTP('smtp.gmail.com', 587) as server:
             server.starttls()
             server.login('John@example.com', 'password')  # Use app password for Gmail
-            server.sendmail('John1@example.com', [to_email], msg.as_string())
-        print(f"[EMAIL] Sent to {to_email}")
+            server.sendmail('John@example.com', [to_email], msg.as_string())
+        print(f"[EMAIL SENT] To {to_email}")
     except Exception as e:
-        print(f"[ERROR] Failed to send email to {to_email}: {e}")
+        print(f"[EMAIL ERROR] Failed to send email to {to_email}: {e}")
 
-# Log in-app notifications (this could eventually display in the app)
+# Log in-app notifications 
 def log_in_app(user_id, message):
      """Logs an in-app notification for a user.
 
@@ -40,12 +40,15 @@ def log_in_app(user_id, message):
     Returns:
         None """
     print(f"[IN-APP] Notification for user {user_id}: {message}")
-    # Log to database or file (example using a simple log)
-    with open("app_notifications.log", "a") as log_file:
-        log_file.write(f"User {user_id}: {message}\n")
+    try:
+    # Log to database or file 
+        with open("app_notifications.log", "a") as log_file:
+            log_file.write(f"User {user_id}: {message}\n")
+    except Exception as e: 
+        print(f"[LOG ERROR] Could not write to log file: {e}")
 
 # Main function to send notifications
-def send_event_notifications():
+def send_event_notifications(conn):
     """ Sends email and in-app notifications for upcoming events within the next hour.
 
     This function fetches events happening today and checks if their start time is 
@@ -57,15 +60,22 @@ def send_event_notifications():
 
     Returns:
         None """
-    conn = sqlite3.connect("events.db")
     cursor = conn.cursor()
 
     now = datetime.now()
     one_hour_later = now + timedelta(hours=1)
     today_str = now.strftime("%Y-%m-%d")
 
+    print(f"[INFO] Checking for events on {today_str} between {now.strftime('%H.%M')}
+    and {one_hour_later.strftime ('%H:%M')}")
+
     cursor.execute("SELECT id, event_name, event_time FROM events WHERE event_date = ?", (today_str,))
     events = cursor.fetchall()
+
+    if not events: 
+        print("[INFO] No events scheduled for today.")
+    else: 
+        print(f"[INFO] Found {len(events) } events.")
 
     for event_id, name, time_str in events:
         start_time_str = time_str.split("-")[0].strip()  # Extract the start time
@@ -73,25 +83,32 @@ def send_event_notifications():
 
         try:
             event_start_dt = dt_parser.parse(full_time_str)
+            print(f"[INFO] Event '{name}' starts at {event_start_dt.strftime('%Y-%m-%d%H:%M')}")
         except Exception as e:
-            print(f"Could not parse time for event '{name}': {e}")
+            print(f"[PARSE ERROR} Could not parse time for event '{name}': {e}")
             continue
 
         if now <= event_start_dt <= one_hour_later:
             cursor.execute("SELECT user_id FROM favorites WHERE event_id = ?", (event_id,))
             users = cursor.fetchall()
 
-            for (user_id,) in users:
-                email = f"{user_id}@terpmail.umd.edu"  # Example email
-                msg = f"Reminder: '{name}' starts at {start_time_str}."
+            if not users: 
+                print(f"[INFO] No users favorited event '{name}'")
+            else: 
+                for (user_id,) in users:
+                    email = f"{user_id}@terpmail.umd.edu"  # Example email
+                    msg = f"Reminder: '{name}' starts at {start_time_str}."
 
                 # Send email notification
-                send_email(email, "Event Reminder", msg)
+                    send_email(email, "Event Reminder", msg)
 
                 # Log in-app notification
-                log_in_app(user_id, msg)
+                    log_in_app(user_id, msg)
 
     conn.close()
 
 if __name__ == "__main__":
+    conn = sqlite3.connect("events.db")
     send_event_notifications()
+    conn.close()
+    
