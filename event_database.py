@@ -9,6 +9,7 @@ class EventsFinderDB:
         self.conn = sqlite3.connect(database_name)
         self.cursor = self.conn.cursor()
         self.create_table()
+        self.create_favorites_table()
 
     def create_table(self):
         
@@ -24,6 +25,21 @@ class EventsFinderDB:
         ''')
         self.conn.commit()
 
+    def create_favorites_table(self):
+        self.cursor.execute('''
+            CREATE TABLE IF NOT EXISTS favorites (
+                user_id INTEGER,
+                event_id INTEGER
+            )
+        ''')
+        self.conn.commit()
+
+    def add_favorite(self, user_id, event_id):
+        self.cursor.execute(
+            "INSERT INTO favorites (user_id, event_id) VALUES (?, ?)",
+            (user_id, event_id)
+        )
+        self.conn.commit()
 
     def add_events(self, event_name, event_date, location, event_time):
         """
