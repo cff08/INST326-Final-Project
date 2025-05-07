@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-import pandas as pd
+from event_database import EventsFinderDB
 
 class EventScraper:
     def __init__(self, url):
@@ -29,8 +29,7 @@ class EventScraper:
 
             for card in cards:
                 title = "No Title"
-                subtitle = "No Subtitle"
-                link = "No Link"
+                date_tag = card.find('div', class_='profile-card-title')
 
                 title_tag = card.find('h2', class_ = 'card-title')
                 if title_tag is not None:
@@ -46,21 +45,30 @@ class EventScraper:
                     "date": date,
                 }
                 events.append(event_info)
-
         else:
             print("Soup object is None. Cannot scrape events.")
 
         return events
-    
 
 if __name__ == "__main__":
     url = "https://stamp.umd.edu/upcoming_events"
-
     scraper = EventScraper(url)
-
     event_list = scraper.scrape_events()
 
+    db = EventsFinderDB()
+
     for event in event_list:
-        print(f"Title: {event['title']}")
-        print(f"Date: {event['date']}")
-        print("-" * 50)
+        title = event['title']
+        date = event['date']
+        location = "UMD Campus"         # Placeholder
+        event_time = "TBD"              # Placeholder
+
+        event_id = db.add_events(title, date, location, event_time)
+        print(f"Inserted into DB: {title} on {date} (event_id={event_id})")
+
+    db.close()
+
+    # for event in event_list:
+    #     print(f"Title: {event['title']}")
+    #     print(f"Date: {event['date']}")
+    #     print("-" * 50)

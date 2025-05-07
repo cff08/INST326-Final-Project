@@ -98,6 +98,13 @@ class EventsFinderDB:
     def remove_event(self, event_id):
         self.cursor.execute("DELETE FROM events WHERE id = ?", (event_id,))
         self.conn.commit()
+    
+    def event_exists(self, name, date):
+        self.cursor.execute(
+            "SELECT id FROM events WHERE event_name = ? AND event_date = ?", 
+            (name, date)
+        )
+        return self.cursor.fetchone() is not None
 
     def close(self):
         self.conn.close()
