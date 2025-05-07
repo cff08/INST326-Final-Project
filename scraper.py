@@ -60,11 +60,14 @@ if __name__ == "__main__":
     for event in event_list:
         title = event['title']
         date = event['date']
-        location = "UMD Campus"         # Placeholder
-        event_time = "TBD"              # Placeholder
+        location = "UMD Campus"
+        event_time = "TBD"
 
-        event_id = db.add_events(title, date, location, event_time)
-        print(f"Inserted into DB: {title} on {date} (event_id={event_id})")
+        if not db.event_exists(title, date):
+            event_id = db.add_events(title, date, location, event_time)
+            print(f"Inserted into DB: {title} on {date} (event_id={event_id})")
+        else:
+            print(f"[SKIPPED] '{title}' on {date} already exists.")
 
     db.close()
 
