@@ -1,3 +1,5 @@
+import sqlite3
+
 """
 Manages storage-related user interactions in the UMD Event App.
 Responsible for:
@@ -6,101 +8,88 @@ Responsible for:
 - Storing user preferences
 
 """
-
 class StorageSystem:
-    def __init__(self):
-        """
-    
-        creates a list to store user bookmarks and RSVPS
+    def __init__(self, database_name="events.db"):
+        self.conn = sqlite3.connect(database_name)
+        self.cursor = self.conn.cursor()
+        self.create_favorites_table()
+        self.create_rsvp_table()
 
-        ARGS: 
+    def create_favorites_table(self):
+        self.cursor.execute('''
+            CREATE TABLE IF NOT EXISTS favorites (
+                user_id INTEGER,
+                event_id INTEGER,
+                PRIMARY KEY (user_id, event_id)
+            )
+        ''')
+        self.conn.commit()
 
-        Returns:
+    def create_rsvp_table(self):
+        self.cursor.execute('''
+            CREATE TABLE IF NOT EXISTS rsvps (
+                user_id INTEGER,
+                event_id INTEGER,
+                PRIMARY KEY (user_id, event_id)
+            )
+        ''')
+        self.conn.commit()
 
-        """
-        self.bookmarks = {}
-        self.rsvps = {}
-
-    def bookmark_event(self, event_name):
-        """
-        Bookmarks an event for the user
-
-        Args:
-            event_name: the specific ID of the event to bookmark
-
-        Returns:
-            True to appending new even_id to the bookmarks list, and false if the event is already bookmarked.
-        """
-        if event_name in self.bookmarks:
-            return False # Event already bookmarked
-        else:
-            self.bookmarks[event_name] = True
+    # ---------- BOOKMARKS / FAVORITES ----------
+    def add_bookmark(self, user_id, event_id):
+        try:
+            self.cursor.execute(
+                "INSERT OR IGNORE INTO favorites (user_id, event_id) VALUES (?, ?)",
+                (user_id, event_id)
+            )
+            self.conn.commit()
             return True
-
-    def rsvp_event(self, event_name):
-        """
-        RSVP to an event.
-
-        Args:
-            event_name (str): The unique ID of the event.
-
-        Returns:
-            bool: True if RSVP successful, False if already RSVP’d.
-        """
-        if event_name in self.rsvps:
-            return False  # Already RSVP'd
-        else:
-            self.rsvps[event_name] = True
-            return True
-        
-    def remove_bookmark(self, event_name):
-        """
-        Removes an event from the user's bookmarked list.
-
-        Args:
-            event_name (str): name of event to remove.
-
-        Returns:
-            bool: True if removal successful, False if event not found in bookmarks.
-            Displays all bookmarks after removal
-        """
-        if event_name in self.bookmarks:
-            del self.bookmarks[event_name]
-            return True
-        else:
-            return False
-        
-    def cancel_rsvp(self, event_name):
-        """Removes an event from the user's RSVP list.
-    
-        Args:
-            event_name (str): name of event to remove.
-            Returns: 
-            bool: True if removal successful, False if event not found in RSVPs.
-            """
-        if event_name in self.rsvps:
-            del self.rsvps[event_name]
-            return True
-        else:
+        except:
             return False
 
-    def display_bookmarks(self):
-        """
-        Displays all bookmarked events.
+    def remove_bookmark(self, user_id, event_id):
+        self.cursor.execute(
+            "DELETE FROM favorites WHERE user_id = ? AND event_id = ?",
+            (user_id, event_id)
+        )
+        self.conn.commit()
 
-        Returns:
-            list: A list of all bookmarked event names.
-        """
-        
-        return self.bookmarks
+    def get_user_bookmarks(self, user_id):
+        self.cursor.execute('''
+            SELECT e.id, e.event_name, e.event_date, e.location, e.event_time
+            FROM events e
+            JOIN favorites f ON e.id = f.event_id
+            WHERE f.user_id = ?
+        ''', (user_id,))
+        return self.cursor.fetchall()
 
-    def display_rsvps(self):
-        """
-        Displays all RSVPed events.
+    # ---------- RSVPS ----------
+    def add_rsvp(self, user_id, event_id):
+        try:
+            self.cursor.execute(
+                "INSERT OR IGNORE INTO rsvps (user_id, event_id) VALUES (?, ?)",
+                (user_id, event_id)
+            )
+            self.conn.commit()
+            return True
+        except:
+            return False
 
-        Returns:
-            list: A list of all RSVPed event names.
-        """
-        return self.rsvps
-    
-    
+    def cancel_rsvp(self, user_id, event_id):
+        self.cursor.execute(
+            "DELETE FROM rsvps WHERE user_id = ? AND event_id = ?",
+            (user_id, event_id)
+        )
+        self.conn.commit()
+
+    def get_user_rsvps(self, user_id):
+        self.cursor.execute('''
+            SELECT e.id, e.event_name, e.event_date, e.location, e.event_time
+            FROM events e
+            JOIN rsvps r ON e.id = r.event_id
+            WHERE r.user_id = ?
+        ''', (user_id,))
+        return self.cursor.fetchall()
+
+    def close(self):
+        self.conn.close()
