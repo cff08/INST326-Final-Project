@@ -55,7 +55,7 @@ def send_event_notifications(conn):
     today_str = now.strftime("%B %d").lower()     # "May 09"
     today_day = now.strftime("%A").lower()        # "friday"
 
-    print(f"[INFO] Checking for events occurring on {today_str} ({today_day})")
+    print(f"Checking for events occurring on {today_str} ({today_day})")
 
     cursor.execute("SELECT id, event_name, event_date FROM events")
     events = cursor.fetchall()
