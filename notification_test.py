@@ -10,19 +10,15 @@ class TestNotification(unittest.TestCase):
         self.event_db = EventsFinderDB(":memory:")  # Using an in-memory database for testing
         self.user_db = UsersFinderDB(":memory:")    # Using an in-memory database for testing
 
-        self.event_db.cursor.execute("CREATE TABLE IF NOT EXISTS favorites (user_id INTEGER, event_id INTEGER)")
-        self.event_db.conn.commit()
         # Add mock user to the database for testing
         self.user_db.add_user("John", "john@example.com", "password123")
 
         # Set test event to start within the next hour 
         now = datetime.now()
         today = now.strftime("%Y-%m-%d")
-        start_time = (now + timedelta(minutes=5)).strftime("%I:%M%p").lower()
-        event_time = f"{start_time} - 4:00pm"
-
-        event_id = self.event_db.add_events("Test Event", today, "HBK", event_time)
-        self.event_db.add_favorites(1, event_id)
+        
+        event_id = self.event_db.add_events("Test Event", today)
+        self.event_db.add_favorite(1, event_id)
         
     def tearDown(self):
         self.event_db.close()
@@ -34,10 +30,8 @@ class TestNotification(unittest.TestCase):
         # Simulate the event notifications process
         send_event_notifications(self.event_db.conn)  # pass test DB conn
 
-        now = datetime.now()
-        expected_time = (now + timedelta(minutes=5)).strftime("%I:%M%p").lower()
-        expected_msg = f"Reminder: 'Test Event' starts at {expected_time}."
-    
+        expected_msg = "Reminder: Test Event is happening today!."
+        
         mock_send_email.assert_called_with("1@terpmail.umd.edu", "Event Reminder", expected_msg)
         mock_log_in_app.assert_called_with(1, expected_msg) 
 
