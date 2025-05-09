@@ -18,8 +18,6 @@ class EventsFinderDB:
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 event_name TEXT NOT NULL,
                 event_date TEXT NOT NULL,
-                location TEXT NOT NULL,  
-                event_time TEXT NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         ''')
@@ -41,25 +39,24 @@ class EventsFinderDB:
         )
         self.conn.commit()
 
-    def add_events(self, event_name, event_date, location, event_time):
+    def add_events(self, event_name, event_date):
         """
         Add a new event.
 
         Args:
             event_name (str): The name of the event
             event_date (str): The date of the event
-            location (str): The location of the event
-            event_time (str): The time of the event
+        
         """
         self.cursor.execute(
-            '''INSERT INTO events (event_name, event_date, location, event_time)
-               VALUES (?, ?, ?, ?)''',
-            (event_name, event_date, location, event_time)
+            '''INSERT INTO events (event_name, event_date)
+               VALUES (?, ?)''',
+            (event_name, event_date,)
         )
         self.conn.commit()
         return self.cursor.lastrowid
 
-    def update_event(self, event_id, event_name=None, event_date=None, location=None, event_time=None):
+    def update_event(self, event_id, event_name=None, event_date=None):
         """
         Update event if there are any changes.
 
@@ -67,8 +64,7 @@ class EventsFinderDB:
             event_id (int): The ID of the event
             event_name (str): The name of the event
             event_date (str): The date of the event
-            location (str): The location of the event
-            event_time (str): The time of the event
+            
         """
         update = []
         value = []
@@ -81,13 +77,6 @@ class EventsFinderDB:
             update.append("event_date = ?")
             value.append(event_date)
 
-        if location:
-            update.append("location = ?")
-            value.append(location)
-
-        if event_time:
-            update.append("event_time = ?")
-            value.append(event_time)
 
         
         value.append(event_id)
