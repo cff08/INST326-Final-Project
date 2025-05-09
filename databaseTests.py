@@ -10,7 +10,7 @@ class TestEvent(unittest.TestCase):
         self.db.close()
 
     def test_add_event(self):
-        self.db.add_events("School Event", "2025-04-10", "HBK", "2:00pm - 4:00pm") 
+        self.db.add_events("School Event", "2025-04-10") 
 
 class TestUser(unittest.TestCase):
     def setUp(self):
