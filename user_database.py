@@ -30,17 +30,19 @@ class UsersFinderDB:
             email (str): Email address of the user
             password (str): Password of the user
         """
-       
-        try:
-            self.cursor.execute(
+        self.cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
+
+        if self.cursor.fetchone():
+            print(f"{username} already exists")
+            return None
+        self.cursor.execute(
                 '''INSERT INTO users (username, email, password) VALUES (?, ?, ?)''',
                 (username, email, password)
             )
-            self.conn.commit()
-            print(f"{username} added successfully.")
-            return self.cursor.lastrowid
-        except sqlite3.IntegrityError:
-            print(f"{username} already exists.")  
+        self.conn.commit()
+        print(f"{username} added successfully.")
+        return self.cursor.lastrowid
+
 
     def update_user(self, user_id, username, email=None, password=None):
         """
