@@ -26,7 +26,7 @@ class TestEventScraper(unittest.TestCase):
         """
         events = self.scraper.scrape_events()
         self.assertIsInstance(events, list)
-        if events:  # Only check contents if events were found
+        if events: 
             self.assertIn("title", events[0])
             self.assertIn("date", events[0])
 
