@@ -66,33 +66,32 @@ def send_event_notifications(conn):
     one_hour_later = now + timedelta(hours=1)
     today_str = now.strftime("%Y-%m-%d")
 
-    print(f"[INFO] Checking for events on {today_str} between {now.strftime('%H.%M')} and {one_hour_later.strftime ('%H:%M')}")
+    print(f"Checking for events on {today_str} between {now.strftime('%H.%M')} and {one_hour_later.strftime ('%H:%M')}")
+
+    cursor.execute("SELECT id, event_name FROM events WHERE event_date = ?", (today_str,))
+    events = cursor.fetchall()
+
+    if not events: 
+        print("No events scheduled for today.")
+    else: 
+        print(f"Found {len(events) } events.")
 
     for event_id, name in events:
-        cursor.execute("SELECT id, event_name FROM events WHERE event_date = ?", (today_str,))
-        events = cursor.fetchall()
+        cursor.execute("SELECT user_id FROM favorites WHERE event_id = ?", (event_id,))
+        users = cursor.fetchall()
 
-        if not events: 
-            print("[INFO] No events scheduled for today.")
+        if not users: 
+            print(f"No users favorited event '{name}'")
         else: 
-            print(f"[INFO] Found {len(events) } events.")
+            for (user_id,) in users:
+                email = f"{user_id}@terpmail.umd.edu"  # Example email
+                msg = f"Reminder: {name} is happening today!."
 
-        
-            cursor.execute("SELECT user_id FROM favorites WHERE event_id = ?", (event_id,))
-            users = cursor.fetchall()
+            # Send email notification
+                send_email(email, "Event Reminder", msg)
 
-            if not users: 
-                print(f"[INFO] No users favorited event '{name}'")
-            else: 
-                for (user_id,) in users:
-                    email = f"{user_id}@terpmail.umd.edu"  # Example email
-                    msg = f"Reminder: {name} is happening today!."
-
-                # Send email notification
-                    send_email(email, "Event Reminder", msg)
-
-                # Log in-app notification
-                    log_in_app(user_id, msg)
+            # Log in-app notification
+                log_in_app(user_id, msg)
 
     conn.close()
 
