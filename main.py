@@ -35,7 +35,7 @@ def main():
         title = event['title']
         date = event['date']
     
-        if not event_exists(title, date):
+        if not db.event_exists(title, date):
             event_id = db.add_events(title, date)
             print(f"Inserted: {title} - {date}")
         
