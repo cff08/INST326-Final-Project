@@ -54,7 +54,7 @@ class NotificationSystem:
         except Exception as e: 
             print(f"[LOG ERROR] Could not write to log file: {e}")
 
-    def is_event_td(self, event_date):
+    def is_event_td(self, event_date, name = None):
             event_date = event_date.lower()
             matched = False
 
