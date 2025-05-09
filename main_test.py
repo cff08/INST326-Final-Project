@@ -4,7 +4,7 @@ import main
 
 class TestMain(unittest.TestCase):
 
-    @patch("main.send_event_notifications")
+    @patch("main.NotificationSystem")
     @patch("main.UsersFinderDB")
     @patch("main.StorageSystem")
     @patch("main.EventsFinderDB")
