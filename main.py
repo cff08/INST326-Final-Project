@@ -13,7 +13,7 @@ from system import StorageSystem
 from event_database import EventsFinderDB
 from user_database import UsersFinderDB
 from scraper import EventScraper  # assuming this is the class name
-from notification_system import send_event_notifications
+from notification_system import NotificationSystem
 
 def main():
     """
@@ -57,7 +57,7 @@ def main():
         else:
             print(f"Skipped: {title} already exists")
     
-    send_event_notifications(db.conn)
+    notifier.send_event_notifications(user_id, event_list)
     
     db.close()
     storage.close()
