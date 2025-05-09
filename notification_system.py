@@ -31,7 +31,7 @@ def send_email(to_email, subject, body):
 
 # Log in-app notifications 
 def log_in_app(user_id, message):
-     """Logs an in-app notification for a user.
+    """Logs an in-app notification for a user.
 
     Args:
         user_id (int): The user’s ID to whom the notification belongs.
@@ -66,29 +66,18 @@ def send_event_notifications(conn):
     one_hour_later = now + timedelta(hours=1)
     today_str = now.strftime("%Y-%m-%d")
 
-    print(f"[INFO] Checking for events on {today_str} between {now.strftime('%H.%M')}
-    and {one_hour_later.strftime ('%H:%M')}")
+    print(f"[INFO] Checking for events on {today_str} between {now.strftime('%H.%M')} and {one_hour_later.strftime ('%H:%M')}")
 
-    cursor.execute("SELECT id, event_name, event_time FROM events WHERE event_date = ?", (today_str,))
-    events = cursor.fetchall()
+    for event_id, name in events:
+        cursor.execute("SELECT id, event_name FROM events WHERE event_date = ?", (today_str,))
+        events = cursor.fetchall()
 
-    if not events: 
-        print("[INFO] No events scheduled for today.")
-    else: 
-        print(f"[INFO] Found {len(events) } events.")
+        if not events: 
+            print("[INFO] No events scheduled for today.")
+        else: 
+            print(f"[INFO] Found {len(events) } events.")
 
-    for event_id, name, time_str in events:
-        start_time_str = time_str.split("-")[0].strip()  # Extract the start time
-        full_time_str = f"{today_str} {start_time_str}"
-
-        try:
-            event_start_dt = dt_parser.parse(full_time_str)
-            print(f"[INFO] Event '{name}' starts at {event_start_dt.strftime('%Y-%m-%d%H:%M')}")
-        except Exception as e:
-            print(f"[PARSE ERROR} Could not parse time for event '{name}': {e}")
-            continue
-
-        if now <= event_start_dt <= one_hour_later:
+        
             cursor.execute("SELECT user_id FROM favorites WHERE event_id = ?", (event_id,))
             users = cursor.fetchall()
 
@@ -97,7 +86,7 @@ def send_event_notifications(conn):
             else: 
                 for (user_id,) in users:
                     email = f"{user_id}@terpmail.umd.edu"  # Example email
-                    msg = f"Reminder: '{name}' starts at {start_time_str}."
+                    msg = f"Reminder: {name} is happening today!."
 
                 # Send email notification
                     send_email(email, "Event Reminder", msg)
