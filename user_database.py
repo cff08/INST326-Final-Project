@@ -43,6 +43,7 @@ class UsersFinderDB:
         print(f"{username} added successfully.")
         return self.cursor.lastrowid
 
+    
     def get_user(self, email):
         self.cursor.execute("SELECT id FROM users WHERE email = ?", (email,))
         result = self.cursor.fetchone()
@@ -50,7 +51,7 @@ class UsersFinderDB:
             return result[0]
         else:
             None
-            
+
     def update_user(self, user_id, username, email=None, password=None):
         """
         Update user if there are any changes.
