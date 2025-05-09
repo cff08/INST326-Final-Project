@@ -49,54 +49,77 @@ def log_in_app(user_id, message):
 
 # Main function to send notifications
 def send_event_notifications(conn):
-    """ Sends email and in-app notifications for upcoming events within the next hour.
-
-    This function fetches events happening today and checks if their start time is 
-    within the next hour. If so, it sends email and logs an in-app notification 
-    to the users who favorited the event.
-
-    Args:
-        None
-
-    Returns:
-        None """
     cursor = conn.cursor()
 
     now = datetime.now()
-    one_hour_later = now + timedelta(hours=1)
-    today_str = now.strftime("%Y-%m-%d")
+    today_str = now.strftime("%B %d").lower()     # "May 09"
+    today_day = now.strftime("%A").lower()        # "friday"
 
-    print(f"Checking for events on {today_str} between {now.strftime('%H.%M')} and {one_hour_later.strftime ('%H:%M')}")
+    print(f"[INFO] Checking for events occurring on {today_str} ({today_day})")
 
-    cursor.execute("SELECT id, event_name FROM events WHERE event_date = ?", (today_str,))
+    cursor.execute("SELECT id, event_name, event_date FROM events")
     events = cursor.fetchall()
 
-    if not events: 
-        print("No events scheduled for today.")
-    else: 
-        print(f"Found {len(events) } events.")
+    matches_today = 0
 
-    for event_id, name in events:
-        cursor.execute("SELECT user_id FROM favorites WHERE event_id = ?", (event_id,))
-        users = cursor.fetchall()
+    for event_id, name, event_date in events:
+        event_date = event_date.lower()
+        matched = False
 
-        if not users: 
-            print(f"No users favorited event '{name}'")
-        else: 
-            for (user_id,) in users:
-                email = f"{user_id}@terpmail.umd.edu"  # Example email
-                msg = f"Reminder: {name} is happening today!."
+        #Checking for date in range format.
+        event_date = event_date.replace("—", " to ").replace("–", " to ")
 
-            # Send email notification
-                send_email(email, "Event Reminder", msg)
+        if " to " in event_date:
+            date_range = event_date.split(" to ")
+            
+            if len(date_range) == 2:
+                start_str = date_range[0].strip()
+                end_str = date_range[1].strip()
 
-            # Log in-app notification
-                log_in_app(user_id, msg)
+                try:
+                    start_date = datetime.strptime(start_str, "%B %d").replace(year=now.year)
+                    end_date = datetime.strptime(end_str, "%B %d").replace(year=now.year)
+
+                    if start_date <= now <= end_date:
+                        matched = True
+
+                except ValueError as e:
+                    print(f"[PARSE ERROR] Could not parse date range for '{name}': {event_date}")
+
+
+        #Direct match for today’s date (e.g., “may 9” in “Wednesday, May 9”)
+        if not matched and today_str in event_date:
+            matched = True
+
+        #Day-of-week keywords (like “Fridays”)
+        weekdays = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+        for day in weekdays:
+            if day in event_date or day + "s" in event_date:
+                if day == today_day:
+                    matched = True
+
+        if matched:
+            matches_today += 1
+            cursor.execute("SELECT user_id FROM favorites WHERE event_id = ?", (event_id,))
+            users = cursor.fetchall()
+
+            if not users:
+                print(f"No users favorited event '{name}'")
+            else:
+                for (user_id,) in users:
+                    email = f"{user_id}@terpmail.umd.edu"
+                    msg = f"Reminder: '{name}' is happening today!"
+                    send_email(email, "Event Reminder", msg)
+                    log_in_app(user_id, msg)
+
+    if matches_today == 0:
+        print("No events happening today.")
+    else:
+        print(f"Found {matches_today} event(s) happening today.")
 
     conn.close()
-
 if __name__ == "__main__":
     conn = sqlite3.connect("events.db")
-    send_event_notifications()
+    send_event_notifications(conn)
     conn.close()
     
