@@ -51,14 +51,42 @@ def main():
         title = event['title']
         date = event['date']
         if not db.event_exists(title, date):
-            event_id = db.add_events(title, date)
-            print(f"Inserted: {title} - {date}")
-        
-        else:
-            print(f"Skipped: {title} already exists")
+            db.add_events(title, date)
+            
+    print("\n ----------- EVENTS HAPPENING TODAY ------------")
+    cursor = db.conn.cursor()
+    cursor.execute("SELECT id, event_name, event_date FROM events")
+    events = cursor.fetchall()
+    tdevents = []
+
+        # Step 4: Run notification system
+    for event_id, name, date in events:
+        if notifier.is_event_td(date):
+            tdevents.append((event_id, name, date))
+            print(f"[{event_id}] {name} - {date}")
+
+    if not tdevents:
+        print("No events today")
+    else:
+        response = input("Would you like to favorite any of these events? (yes/no): ").strip().lower()
     
-    notifier.send_event_notifications(user_id, event_list)
-    
+    if response == "yes":
+            selected = input("Enter the ID(s) of the events to favorite (comma-separated): ")
+            selected_ids = []
+            for x in selected.split(","):
+                x = x.strip()
+                if x.isdigit():
+                    selected_ids.append(int(x))
+                else:
+                    print(f"Skipping invalid input: '{x}' (not a number)")
+            
+            for event_id in selected_ids:
+                success = storage.add_bookmark(user_id, event_id)
+                if success:
+                    print(f"Event {event_id} favorited.")
+                else:
+                    print(f"Event {event_id} already favorited.")
+
     db.close()
     storage.close()
     user_db.close()
