@@ -73,12 +73,17 @@ def main():
        
        if response == "yes":
             selected = input("Enter the ID(s) of the events to favorite (comma-separated): ")
-            selected_ids = [int(x.strip()) for x in selected.split(",")]
+            
+            selected_ids = []
+            for x in selected.split(","):
+                x = x.strip()
+                if x.isdigit():
+                    selected_ids.append(int(x))
             
             for event_id in selected_ids:
                 success = storage.add_bookmark(user_id, event_id)
                 if success:
-                    print(f"✓ Event {event_id} favorited.")
+                    print(f"Event {event_id} favorited.")
                 else:
                     print(f"Event {event_id} already favorited.")
 
