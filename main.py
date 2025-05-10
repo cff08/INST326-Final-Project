@@ -70,7 +70,7 @@ def main():
     else:
         response = input("Would you like to favorite any of these events? (yes/no): ").strip().lower()
     
-    if response == "yes":
+        if response == "yes":
             selected = input("Enter the ID(s) of the events to favorite (comma-separated): ")
             selected_ids = []
             for x in selected.split(","):
