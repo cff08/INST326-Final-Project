@@ -89,15 +89,15 @@ class NotificationSystem:
                     print(f"Could not parse date range for '{name}': {event_date}")
 
             #Direct match for today’s date (e.g., “may 9” in “Wednesday, May 9”)
-            if not matched and self.today_str in event_date:
-                matched = True
+        if not matched and self.today_str in event_date:
+            matched = True
 
             # 3. Day-of-week match
-            weekdays = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
-            for day in weekdays:
-                if (day in event_date or day + "s" in event_date) and day == self.today_day:
-                    matched = True
-            return matched
+        weekdays = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+        for day in weekdays:
+            if (day in event_date or day + "s" in event_date) and day == self.today_day:
+                matched = True
+        return matched
         
         # Main function to send notifications
     def send_event_notifications(self):
