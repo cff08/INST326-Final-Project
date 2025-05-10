@@ -68,25 +68,25 @@ class NotificationSystem:
             name (str, optional): name of the event (for error messages).
         
         Returns:
-            bool: True if the event is happening today, or False otherwise.
-        """
-            event_date = event_date.lower()
-            matched = False
+            bool: True if the event is happening today, or False otherwise. """
+            
+        event_date = event_date.lower()
+        matched = False
 
-            # Normalize date ranges 
-            event_date = event_date.replace("—", " to ").replace("–", " to ")
+        # Normalize date ranges 
+        event_date = event_date.replace("—", " to ").replace("–", " to ")
 
             # Handle date ranges (e.g. "May 1 to May 3")
-            if " to " in event_date:
-                parts = event_date.split(" to ")
-                if len(parts) == 2:
-                    try:
-                        start = datetime.strptime(parts[0].strip(), "%B %d").replace(year=self.now.year)
-                        end = datetime.strptime(parts[1].strip(), "%B %d").replace(year=self.now.year)
-                        if start <= self.now <= end:
-                            matched = True
-                    except ValueError:
-                        print(f"Could not parse date range for '{name}': {event_date}")
+        if " to " in event_date:
+            parts = event_date.split(" to ")
+            if len(parts) == 2:
+                try:
+                    start = datetime.strptime(parts[0].strip(), "%B %d").replace(year=self.now.year)
+                    end = datetime.strptime(parts[1].strip(), "%B %d").replace(year=self.now.year)
+                    if start <= self.now <= end:
+                        matched = True
+                except ValueError:
+                    print(f"Could not parse date range for '{name}': {event_date}")
 
             #Direct match for today’s date (e.g., “may 9” in “Wednesday, May 9”)
             if not matched and self.today_str in event_date:
