@@ -27,7 +27,7 @@ class EventsFinderDB:
         self.conn.commit()
 
     def create_favorites_table(self):
-         """
+        """
         Create "favorites" event table.
         """
         self.cursor.execute('''
