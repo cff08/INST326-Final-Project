@@ -3,6 +3,10 @@ from unittest.mock import patch, MagicMock
 import main
 
 class TestMain(unittest.TestCase):
+    """
+    Unit tests for the main() function. Use mock objects to simulate
+    interactions with the database, and input.
+    """
     @patch("builtins.input", return_value="test@example.com")
     @patch("main.NotificationSystem")
     @patch("main.UsersFinderDB")
@@ -11,7 +15,12 @@ class TestMain(unittest.TestCase):
     @patch("main.EventScraper")
 
     def test_main(self, scraper, eventsdb, storage, userdb, notification, input):
-        
+        """
+        - scrapes event using EventScraper.
+        - check if events already exist in the databse.
+        - add new events to the database if they don't exist.
+        - creates and call NotificationSystem with the correct db connection
+        """ 
         event_lists = [{"title": "Event 1", "date": "2025-05-09"},
                        {"title": "Event 2", "date": "2025-05-10"}]
         
