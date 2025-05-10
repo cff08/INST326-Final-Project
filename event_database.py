@@ -3,7 +3,8 @@ from datetime import datetime
 
 class EventsFinderDB:
     """
-    Manage user information and event creation.
+    Manage user events and favorites using SQLite. Create events/favorites,
+    track user favorit events, add/update/remove events.
     """
     def __init__(self, database_name="events.db"):
         self.conn = sqlite3.connect(database_name)
@@ -12,7 +13,9 @@ class EventsFinderDB:
         self.create_favorites_table()
 
     def create_table(self):
-        
+        """
+        Create events table.
+        """
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS events (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -24,6 +27,9 @@ class EventsFinderDB:
         self.conn.commit()
 
     def create_favorites_table(self):
+         """
+        Create "favorites" event table.
+        """
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS favorites (
                 user_id INTEGER,
@@ -33,6 +39,13 @@ class EventsFinderDB:
         self.conn.commit()
 
     def add_favorite(self, user_id, event_id):
+        """
+        Add an event to user's list of favorites.
+
+        Args:
+            user_id(int): id of the user
+            event_id(int): id of the event to be favorited
+        """
         self.cursor.execute(
             "INSERT INTO favorites (user_id, event_id) VALUES (?, ?)",
             (user_id, event_id)
@@ -85,10 +98,23 @@ class EventsFinderDB:
         self.conn.commit()
 
     def remove_event(self, event_id):
+        """
+        Remove an event from the database.
+
+        Args:
+            event_id(int): id of the event to remove
+        """
         self.cursor.execute("DELETE FROM events WHERE id = ?", (event_id,))
         self.conn.commit()
     
     def event_exists(self, name, date):
+        """
+        Check an event if already exist in the database.
+
+        Args:
+            name(str): name of the event
+            date(str): date of the event
+        """
         self.cursor.execute(
             "SELECT id FROM events WHERE event_name = ? AND event_date = ?", 
             (name, date)
@@ -96,6 +122,9 @@ class EventsFinderDB:
         return self.cursor.fetchone() is not None
 
     def close(self):
+        """
+        Close the database connection.
+        """
         self.conn.close()
 
 if __name__ == "__main__":
