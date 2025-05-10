@@ -3,7 +3,8 @@ from datetime import datetime
 
 class UsersFinderDB:
     """
-    Manage user information.
+    Manage user information in SQLite database, provides to methods
+    to add, update, and remove users.
     """
     def __init__(self, database_name="users.db"):
         self.conn = sqlite3.connect(database_name)
@@ -11,6 +12,9 @@ class UsersFinderDB:
         self.create_table()
 
     def create_table(self):
+        """
+        Create users table in the database.
+        """
         self.cursor.execute('''
               CREATE TABLE IF NOT EXISTS users (
                  id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -45,6 +49,14 @@ class UsersFinderDB:
 
     
     def get_user(self, email):
+        """
+        Retrieve user id by email address.
+
+        Args:
+            email(str): email of the user
+        Returns:
+            int or None: user id if found, otherwise None
+        """
         self.cursor.execute("SELECT id FROM users WHERE email = ?", (email,))
         result = self.cursor.fetchone()
         if result:
@@ -85,17 +97,26 @@ class UsersFinderDB:
         print(f"User ID {user_id} update successfully.")  
 
     def remove_user(self, user_id):
+        """
+        Remove user from the database.
+
+        Args:
+            user_id(int): user id to remove
+        """
         self.cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
         self.conn.commit()   
         print(f"User ID {user_id} remove successfully.")     
             
     def close(self):
+        """
+        Close database connection.
+        """
         self.conn.close()        
 
 if __name__ == "__main__":
     user = UsersFinderDB()
 
-    # Add user
+    #Add user
     #user1 = user.add_user("John", "john@example.com", "123456789")
     #print(user1)
     #user.remove_user(user_id=6)
