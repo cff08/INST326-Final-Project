@@ -81,11 +81,19 @@ def main():
                     print(f"Skipping invalid input: '{x}' (not a number)")
             
             for event_id in selected_ids:
-                success = storage.add_bookmark(user_id, event_id)
-                if success:
-                    print(f"Event {event_id} favorited.")
-                else:
+                already_favorited = db.conn.execute(
+                    "SELECT 1 FROM favorites WHERE user_id = ? AND event_id = ?",
+                    (user_id, event_id)
+                ).fetchone()
+
+                if already_favorited:
                     print(f"Event {event_id} already favorited.")
+                else:
+                    success = storage.add_bookmark(user_id, event_id)
+                    if success:
+                        print(f"Event {event_id} favorited.")
+                    else:
+                        print(f"Failed to favorite event {event_id}.")
 
     db.close()
     storage.close()
