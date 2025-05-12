@@ -93,3 +93,8 @@ class StorageSystem:
 
     def close(self):
         self.conn.close()
+
+if __name__ == "__main__":
+    s = StorageSystem()
+    s.close()
+    print("Favorites and RSVPs tables created.")
