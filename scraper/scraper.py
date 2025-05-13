@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from event_database import EventsFinderDB
+from database.event_database import EventsFinderDB
 
 class EventScraper:
     def __init__(self, url):
