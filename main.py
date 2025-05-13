@@ -9,11 +9,11 @@ Planned Responsibilities:
 - combines data interactions with scraped event data
 """
 
-from system import StorageSystem
-from event_database import EventsFinderDB
-from user_database import UsersFinderDB
-from scraper import EventScraper  # assuming this is the class name
-from notification_system import NotificationSystem
+from system.system import StorageSystem
+from database.event_database import EventsFinderDB
+from database.user_database import UsersFinderDB
+from scraper.scraper import EventScraper  # assuming this is the class name
+from notification.notification_system import NotificationSystem
 
 def main():
     """
