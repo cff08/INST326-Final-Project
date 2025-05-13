@@ -1,9 +1,9 @@
 import unittest
 from unittest.mock import patch
 from datetime import datetime, timedelta
-from notification_system import NotificationSystem
-from event_database import EventsFinderDB
-from user_database import UsersFinderDB
+from notification.notification_system import NotificationSystem
+from database.event_database import EventsFinderDB
+from database.user_database import UsersFinderDB
 
 class TestNotification(unittest.TestCase):
     def setUp(self):
