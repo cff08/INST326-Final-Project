@@ -1,6 +1,6 @@
 import unittest
 import sqlite3
-from system import StorageSystem
+from system.system import StorageSystem
 
 class TestStorageSystem(unittest.TestCase):
     def setUp(self):
