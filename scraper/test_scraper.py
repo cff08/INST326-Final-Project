@@ -1,5 +1,5 @@
 import unittest
-from scraper import EventScraper
+from scraper.scraper import EventScraper
 
 class TestEventScraper(unittest.TestCase):
     """
