@@ -1,6 +1,6 @@
 import unittest
-from event_database import EventsFinderDB
-from user_database import UsersFinderDB
+from database.event_database import EventsFinderDB
+from database.user_database import UsersFinderDB
 """
 Unit tests for the EventsFinderDB and UsersFinderDB database.
 """
