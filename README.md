@@ -14,4 +14,9 @@
 - Event Scraper:
 
 # Usage
+
 # Tech Stack
+- Backend: Python
+- Database: SQLite
+- Scraper: BeautifulSoup
+  
