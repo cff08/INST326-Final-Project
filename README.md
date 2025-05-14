@@ -1,6 +1,6 @@
 # Event Finder App
 - An application help users keep track of school events.
-- Users can register, favorites events, and browse upcominf events.
+- Users can register, favorites events, and browse upcoming events.
 
 # Overview
 - This application is designed to make an event finder easy. It is structured
