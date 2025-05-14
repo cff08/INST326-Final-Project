@@ -3,7 +3,7 @@
 - Users can register, favorites events, and browse upcominf events.
 
 # Overview
-- This application is designed to make an event finder easy. it is structured
+- This application is designed to make an event finder easy. It is structured
   five core components that work together to deliver an ideal experience to the user.
 
 # System Components
