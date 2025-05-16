@@ -1,3 +1,11 @@
+"""Unit tests for the NotificationSystem class.
+
+These tests verify that users receive the correct notifications (email and
+in-app logs) when they have favorited an event happening today.
+
+Tests are run using in-memory SQLite databases for isolation.
+"""
+
 import unittest
 from unittest.mock import patch
 from datetime import datetime, timedelta
