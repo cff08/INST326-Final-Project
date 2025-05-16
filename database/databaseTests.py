@@ -1,3 +1,10 @@
+"""Unit tests for EventsFinderDB and UsersFinderDB database classes.
+
+This module uses in-memory SQLite databases to test adding events and users.
+Each class tests one database type in isolation to ensure that basic insertion
+and connection logic is working as expected.
+"""
+
 import unittest
 from database.event_database import EventsFinderDB
 from database.user_database import UsersFinderDB
