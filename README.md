@@ -63,4 +63,23 @@ Some helper methods were developed but not used in the final version of the app.
 
 These unused methods don’t affect functionality and demonstrate the modular, extensible nature of the project.
 
+# Annotated Bibliography
+
+
+Karajgiker, Jajwalya. “Scraping Open Data from the Web with Beautifulsoup.” Penn Libraries, 17 Dec. 2021, www.library.upenn.edu/rdds/work/beautiful-soup.   
+  This source was helpful for guidance in scraping for our project. 
+  
+Kurweg, Jonas. “How to Set up Mobile App Event Tracking: Complete Guide 2025.” UXCam Blog, 29 Nov. 2024, uxcam.com/blog/mobile-app-event-tracking/.  
+  This source gives an overview of why an event tracking app is useful and how it may be implemented.
+  
+McQuillan, Ronan. “Data Sources for App Projects: Ultimate Guide.” Budibase, Budibase, 9 Aug. 2023, budibase.com/blog/data/data-sources/.  
+  This source suggests a way for our project’s database and logging of campus events. 
+  
+Pal, Himanshu. “Complete Guide on How to Develop Mobile App in Pythoncomplete Guide on How to Develop Mobile App in Python.” IT Services Company in Singapore, 31 Aug. 2023, www.applify.com.sg/blog/how-to-develop-mobile-app-in-python.  
+  This is an additional source that provides a detailed step by step guide on how to begin coding for the development of this app. It gives specific criterias to look out for. 
+  
+“Unittest.Mock - Mock Object Library.” Python Documentation, docs.python.org/3/library/unittest.mock.html.  Accessed 15 May 2025. 
+  This document was referred to the unit test portion of our notification system test file. It was particularly helpful in implementing the patch functions. 
+
+
 
