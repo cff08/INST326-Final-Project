@@ -16,7 +16,10 @@ class TestNotification(unittest.TestCase):
         - Initialize in-memory user and event database.
         - Add a test user, and test event scheduled for today.
         - Add the event as a favorite for the test user.
+
+        Args: None
         """
+
         self.event_db = EventsFinderDB(":memory:")  # Using an in-memory database for testing
         self.user_db = UsersFinderDB(":memory:")    # Using an in-memory database for testing
 
@@ -33,6 +36,8 @@ class TestNotification(unittest.TestCase):
     def tearDown(self):
         """ 
         Close the in-memory database connection after each test.
+
+        Args: None
         """
         self.event_db.close()
         self.user_db.close()
@@ -41,10 +46,19 @@ class TestNotification(unittest.TestCase):
     @patch.object(NotificationSystem, "log_in_app")
 
     def test_send_event_notifications(self, mock_log_in_app, mock_send_email):
+        """Test that notifications are sent correctly.
+
+        Verifies that when an event is happening today and a user has favorited
+        it, the NotificationSystem sends an email and logs an in-app message.
+
+        Args:
+            mock_log_in_app (Mock): Patch for log_in_app method.
+            mock_send_email (Mock): Patch for send_email method.
+
+        Asserts:
+            That both patched methods were called with the correct arguments.
         """
-        - Tests that notification system correctly trigger email.
-        - in-app notifications for user who have favorited an event.
-        """
+        
         notifier = NotificationSystem(self.event_db.conn)
         notifier.send_event_notifications()
 
