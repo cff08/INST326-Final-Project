@@ -9,6 +9,7 @@ class StorageSystem:
     def __init__(self, database_name="events.db"):
         """
         Initializes the storage system
+
         Args: database_name (str): The name of the SQLite database file
         
         Returns: None
@@ -32,7 +33,8 @@ class StorageSystem:
         self.conn.commit()
 
     def create_rsvp_table(self):
-        """ Creates the RSVPs table for storing user RSVPs  """
+        """ Creates the RSVPs table for storing user RSVPs  
+        """
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS rsvps (
                 user_id INTEGER,
