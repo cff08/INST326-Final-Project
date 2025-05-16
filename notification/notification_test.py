@@ -4,9 +4,19 @@ from datetime import datetime, timedelta
 from notification.notification_system import NotificationSystem
 from database.event_database import EventsFinderDB
 from database.user_database import UsersFinderDB
-
+"""
+Unit test for the notification system class.
+"""
 class TestNotification(unittest.TestCase):
+    """
+    Contains unit tests for verifying the action of notification system.
+    """
     def setUp(self):
+        """
+        - Initialize in-memory user and event database.
+        - Add a test user, and test event scheduled for today.
+        - Add the event as a favorite for the test user.
+        """
         self.event_db = EventsFinderDB(":memory:")  # Using an in-memory database for testing
         self.user_db = UsersFinderDB(":memory:")    # Using an in-memory database for testing
 
@@ -21,6 +31,9 @@ class TestNotification(unittest.TestCase):
         self.event_db.add_favorite(1, event_id)
         
     def tearDown(self):
+        """ 
+        Close the in-memory database connection after each test.
+        """
         self.event_db.close()
         self.user_db.close()
 
@@ -28,6 +41,10 @@ class TestNotification(unittest.TestCase):
     @patch.object(NotificationSystem, "log_in_app")
 
     def test_send_event_notifications(self, mock_log_in_app, mock_send_email):
+        """
+        - Tests that notification system correctly trigger email.
+        - in-app notifications for user who have favorited an event.
+        """
         notifier = NotificationSystem(self.event_db.conn)
         notifier.send_event_notifications()
 
