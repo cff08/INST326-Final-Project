@@ -7,12 +7,12 @@ Unit tests for the storage system class.
 - Adding/cancelling RSVPs for a user.
 """
 class TestStorageSystem(unittest.TestCase):
+    """ 
+    Unit tests for the StorageSystem class
+    - Tests the functionality of creating tables, adding/removing bookmarks and RSVPs
+    """
     def setUp(self):
-        """
-        - Sets up the in-memory SQLite database.
-        - Inititializes a storage system.
-        - Creates a test event in the events table.
-        """
+ 
         self.storage = StorageSystem(":memory:")
 
         self.storage.cursor.execute('''
@@ -41,9 +41,13 @@ class TestStorageSystem(unittest.TestCase):
         self.storage.close()
 
     def test_add_bookmark(self):
-        """
-        - Tests that bookmark could be successfully added for a user. 
-        - Verifies the correct event is bookmarked.
+        """ 
+        adds a bookmark to the favorites table
+        Args:
+            user_id (int): The ID of the user
+            event_id (int): The ID of the event
+
+
         """
         result = self.storage.add_bookmark(self.user_id, self.event_id)
         self.assertTrue(result)
@@ -54,7 +58,10 @@ class TestStorageSystem(unittest.TestCase):
 
     def test_remove_bookmark(self):
         """
-        - Tests previously added bookmark can be removed.
+        adds a bookmark and then removes a bookmark from the favorites table
+        Args:
+            user_id (int): The ID of the user
+            event_id (int): The ID of the event
         """
         self.storage.add_bookmark(self.user_id, self.event_id)
         self.storage.remove_bookmark(self.user_id, self.event_id)
@@ -64,7 +71,10 @@ class TestStorageSystem(unittest.TestCase):
 
     def test_add_rsvp(self):
         """
-        Tests that RSVP can be successfully added for a user.
+        adds a RSVP to the RSVPs table
+        Args:
+            user_id (int): The ID of the user
+            event_id (int): The ID of the event
         """
         result = self.storage.add_rsvp(self.user_id, self.event_id)
         self.assertTrue(result)
@@ -75,7 +85,10 @@ class TestStorageSystem(unittest.TestCase):
 
     def test_cancel_rsvp(self):
         """
-        Tests that RSVP can be successfully canceled.
+        adds a RSVP and then cancels a RSVP from the RSVPs table
+        Args:
+            user_id (int): The ID of the user
+            event_id (int): The ID of the event
         """
         self.storage.add_rsvp(self.user_id, self.event_id)
         self.storage.cancel_rsvp(self.user_id, self.event_id)

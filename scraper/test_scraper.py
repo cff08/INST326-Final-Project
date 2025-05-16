@@ -19,8 +19,6 @@ class TestEventScraper(unittest.TestCase):
     def test_fetch_page(self):
         """
         Test that the get_soup() method returns a non-None BeautifulSoup object when the page loads successfully.
-
-        Returns: None
         """
 
         soup = self.scraper.get_soup()
