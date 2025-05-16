@@ -1,3 +1,11 @@
+"""Database interface for storing and managing user account data.
+
+This module defines the UsersFinderDB class, which allows you to register,
+retrieve, update, and delete user records using an SQLite database. It
+supports persistent storage of user login information for the event app.
+
+"""
+
 import sqlite3
 from datetime import datetime
 
