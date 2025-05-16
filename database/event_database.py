@@ -1,3 +1,11 @@
+"""Database interface for storing and managing UMD event data.
+
+This module defines the EventsFinderDB class for interacting with an
+SQLite database that stores event information. It supports adding,
+updating, deleting, and checking the existence of events.
+
+"""
+
 import sqlite3
 from datetime import datetime
 
@@ -7,6 +15,11 @@ class EventsFinderDB:
     track user favorit events, add/update/remove events.
     """
     def __init__(self, database_name="events.db"):
+        """Initializes a database connection and creates the events table.
+
+        Args:
+            database_name (str): Name of the database file to connect to.
+        """
         self.conn = sqlite3.connect(database_name)
         self.cursor = self.conn.cursor()
         self.create_table()
@@ -27,13 +40,14 @@ class EventsFinderDB:
 
 
     def add_events(self, event_name, event_date):
-        """
-        Add a new event.
+        """Adds a new event to the database.
 
         Args:
-            event_name (str): The name of the event
-            event_date (str): The date of the event
-        
+            event_name (str): The name of the event.
+            event_date (str): The date the event takes place.
+
+        Returns:
+            int: The ID of the newly inserted event.
         """
         self.cursor.execute(
             '''INSERT INTO events (event_name, event_date)
@@ -53,6 +67,8 @@ class EventsFinderDB:
             event_date (str): The date of the event
             
         """
+        
+        # Dynamically build SQL update query based on which fields are provided
         update = []
         value = []
 
@@ -78,6 +94,7 @@ class EventsFinderDB:
         Args:
             event_id(int): id of the event to remove
         """
+        
         self.cursor.execute("DELETE FROM events WHERE id = ?", (event_id,))
         self.conn.commit()
     
@@ -89,6 +106,7 @@ class EventsFinderDB:
             name(str): name of the event
             date(str): date of the event
         """
+
         self.cursor.execute(
             "SELECT id FROM events WHERE event_name = ? AND event_date = ?", 
             (name, date)
