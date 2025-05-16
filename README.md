@@ -43,6 +43,12 @@ To run the application:
 ```bash
 python main.py
 ```
+# Outcome
+After running python main.py, the terminal should prompt user to enter email. If not registered in system in order to create account with username and password.
+
+Once acount is registered, user will be prompted to viewing event information occuring today from the UMD STAMP events website. Then, users will be asked if they would like to favorite events. They may select event options and will recieve confirmation on the terminal of that event favorited. 
+
+If user already favorited an event before with their account, the terminal will provide a message indicating the event is already favorited. This event will not be repeated in the favorites table. 
 
 # Tech Stack
 
