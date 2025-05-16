@@ -1,3 +1,11 @@
+"""Handles automated event notifications for users.
+
+This module defines the NotificationSystem class, which checks the database
+for any events scheduled for today and sends simulated email and in-app
+notifications to users who have favorited those events.
+
+"""
+
 import smtplib
 import sqlite3
 from datetime import datetime, timedelta
